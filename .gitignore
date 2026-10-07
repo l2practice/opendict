@@ -1,0 +1,12 @@
+# raw source downloads (large; re-download via pipeline/sources.toml)
+pipeline/raw/*.gz
+pipeline/raw/*.csv
+!pipeline/raw/.gitkeep
+# intermediate build files
+pipeline/build/
+# OS / editor
+.DS_Store
+Thumbs.db
+*~
+# node (not needed — static site)
+node_modules/

@@ -1,0 +1,57 @@
+# OpenDict data sources.
+# Only these sources are used. Each is downloaded with a recorded checksum
+# (pipeline/sources.sha256) so the data can be rebuilt exactly.
+
+[[source]]
+name = "English Wiktionary, English entries (Wiktextract, kaikki.org)"
+file = "raw/raw-en.jsonl.gz"
+url = "https://kaikki.org/dictionary/raw-wiktextract-data.jsonl.gz"
+licence = "CC BY-SA 4.0; GFDL"
+attribution = "Wiktionary contributors; Tatu Ylonen, Wiktextract (LREC 2022)"
+retrieved = "2026-10-06"
+used_for = "English headwords, IPA (UK/US), English glosses, examples, synonyms/antonyms, Vietnamese translations, inflected forms"
+
+[[source]]
+name = "English Wiktionary, English entries, postprocessed (Wiktextract, kaikki.org)"
+file = "raw/kaikki-en.jsonl.gz"
+url = "https://kaikki.org/dictionary/English/kaikki.org-dictionary-English.jsonl.gz"
+licence = "CC BY-SA 4.0; GFDL"
+attribution = "Wiktionary contributors; Tatu Ylonen, Wiktextract (LREC 2022)"
+retrieved = "2026-10-06"
+used_for = "fallback/dev only: quick English sample builds (translations sparse in postprocessed data)"
+
+[[source]]
+name = "Vietnamese Wiktionary (Wiktextract, kaikki.org)"
+file = "raw/kaikki-vi.jsonl.gz"
+url = "https://kaikki.org/dictionary/Vietnamese/kaikki.org-dictionary-Vietnamese.jsonl.gz"
+licence = "CC BY-SA 4.0; GFDL"
+attribution = "Những người đóng góp Wiktionary tiếng Việt; Wiktextract"
+retrieved = "2026-10-06"
+used_for = "Vietnamese headwords, English glosses, IPA (Hanoi/Hue/Saigon), examples, related/derived words"
+
+[[source]]
+name = "ECDICT (BNC/COCA frequency ranks and fallback IPA only)"
+file = "raw/ecdict.csv"
+url = "https://raw.githubusercontent.com/skywind3000/ECDICT/master/ecdict.csv"
+licence = "MIT"
+attribution = "skywind3000, ECDICT"
+retrieved = "2026-10-06"
+used_for = "frequency ranks for suggestion sorting; fallback IPA; extra inflection forms"
+
+[[source]]
+name = "CEFR-J Vocabulary Profile 1.5"
+file = "raw/cefrj-vocabulary-profile-1.5.csv"
+url = "https://raw.githubusercontent.com/openlanguageprofiles/olp-en-cefrj/master/cefrj-vocabulary-profile-1.5.csv"
+licence = "Free for research and commercial use; citation required"
+attribution = "CEFR-J Vocabulary Profile 1.5. Tono Laboratory, Tokyo University of Foreign Studies"
+retrieved = "2026-10-06"
+used_for = "CEFR level (A1-B2) per English headword"
+
+[[source]]
+name = "Octanove Vocabulary Profile C1/C2 1.0"
+file = "raw/octanove-vocabulary-profile-c1c2-1.0.csv"
+url = "https://raw.githubusercontent.com/openlanguageprofiles/olp-en-cefrj/master/octanove-vocabulary-profile-c1c2-1.0.csv"
+licence = "CC BY-SA 4.0"
+attribution = "Octanove Labs"
+retrieved = "2026-10-06"
+used_for = "CEFR level (C1-C2) per English headword"

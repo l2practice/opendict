@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenDict — Từ điển Anh–Việt mở</title>
+<meta name="description" content="Từ điển Anh–Việt, Việt–Anh mở cho người học. Dữ liệu mở, tra cứu nhanh, hoạt động offline.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1e40af">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#/" aria-label="OpenDict home">
+    <svg class="brand-icon" viewBox="0 0 32 32" aria-hidden="true"><rect x="4" y="3" width="24" height="26" rx="3" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M12 3v26" stroke="currentColor" stroke-width="2.5"/><path d="M16 11h6M16 16h6M16 21h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <span class="brand-name">OpenDict</span>
+  </a>
+  <div class="search-wrap" id="searchWrap">
+    <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16.5 16.5 21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="searchInput" type="search" autocomplete="off" spellcheck="false"
+           data-i18n-ph="search_ph" placeholder="Tra từ tiếng Anh hoặc tiếng Việt…"
+           aria-label="Search dictionary" aria-expanded="false" aria-controls="suggestBox" role="combobox">
+    <button id="searchClear" class="search-clear" aria-label="×" hidden>×</button>
+    <div id="suggestBox" class="suggest" role="listbox" hidden></div>
+  </div>
+  <nav class="topnav">
+    <button id="langToggle" class="pill-btn" aria-label="Switch language">EN</button>
+    <button id="themeToggle" class="pill-btn" aria-label="Toggle theme">🌙</button>
+  </nav>
+</header>
+
+<main id="view" class="view"></main>
+
+<footer class="footer">
+  <span data-i18n="footer_data">Dữ liệu từ điển mở — xem chi tiết tại</span>
+  <a href="#/about" data-i18n="footer_about">trang Giới thiệu</a>
+  <span class="dot">·</span>
+  <a href="#/favorites" data-i18n="nav_fav">Từ đã lưu</a>
+  <span class="dot">·</span>
+  <a href="#/history" data-i18n="nav_hist">Lịch sử</a>
+</footer>
+
+<script src="js/i18n.js"></script>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
