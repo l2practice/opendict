@@ -18,7 +18,7 @@ url = "https://kaikki.org/dictionary/English/kaikki.org-dictionary-English.jsonl
 licence = "CC BY-SA 4.0; GFDL"
 attribution = "Wiktionary contributors; Tatu Ylonen, Wiktextract (LREC 2022)"
 retrieved = "2026-10-06"
-used_for = "fallback/dev only: quick English sample builds (translations sparse in postprocessed data)"
+used_for = "fallback/dev only: quick English sample builds (translations sparse in postprocessed data); specialist domain labels (Kinh tế/Kế toán) via sense topics in extract_domains.py"
 
 [[source]]
 name = "Vietnamese Wiktionary (Wiktextract, kaikki.org)"
@@ -27,7 +27,7 @@ url = "https://kaikki.org/dictionary/Vietnamese/kaikki.org-dictionary-Vietnamese
 licence = "CC BY-SA 4.0; GFDL"
 attribution = "Những người đóng góp Wiktionary tiếng Việt; Wiktextract"
 retrieved = "2026-10-06"
-used_for = "Vietnamese headwords, English glosses, IPA (Hanoi/Hue/Saigon), examples, related/derived words"
+used_for = "Vietnamese headwords, English glosses, IPA (Hanoi/Hue/Saigon), examples, related/derived words; specialist domain labels (Kinh tế/Kế toán) via sense topics in extract_domains.py"
 
 [[source]]
 name = "ECDICT (BNC/COCA frequency ranks and fallback IPA only)"

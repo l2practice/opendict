@@ -197,3 +197,42 @@ a:hover { text-decoration: underline; }
   .about table { font-size: .82rem; }
   .about th:nth-child(4), .about td:nth-child(4) { display: none; }
 }
+
+/* ---------- specialist domains ---------- */
+.dom-badge {
+  font-size: .78rem; font-weight: 700; padding: 4px 12px; border-radius: 999px;
+  align-self: center; text-decoration: none; white-space: nowrap;
+  background: #fef3c7; color: #92400e; border: 1px solid #fcd34d;
+}
+.dom-badge:hover { text-decoration: none; filter: brightness(.97); }
+.dom-badge.dom-ktoan { background: #e0e7ff; color: #3730a3; border-color: #a5b4fc; }
+[data-theme="dark"] .dom-badge { background: #453508; color: #fcd34d; border-color: #92600e; }
+[data-theme="dark"] .dom-badge.dom-ktoan { background: #1e2a5e; color: #c7d2fe; border-color: #3b4a9e; }
+.dom-home-title { margin: 34px 0 12px; font-size: 1.15rem; }
+.dom-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.dom-card {
+  display: flex; flex-direction: column; gap: 6px; padding: 18px 20px;
+  border: 1px solid var(--border); border-radius: 14px; text-decoration: none; color: var(--text);
+  background: var(--surface); transition: transform .12s, box-shadow .12s;
+}
+.dom-card:hover { text-decoration: none; transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,.08); }
+.dom-card-name { font-weight: 800; font-size: 1.05rem; }
+.dom-card-desc { color: var(--muted); font-size: .9rem; }
+.dom-card-count { font-size: .85rem; color: var(--muted); margin-top: 4px; }
+.dom-card-count b { color: var(--accent); font-size: 1rem; }
+.domain-page { max-width: 900px; }
+.dom-sub { color: var(--muted); margin-top: -8px; }
+.dom-count { font-size: .95rem; }
+.dom-note { color: var(--muted); font-size: .85rem; }
+.dom-filter {
+  width: 100%; max-width: 420px; padding: 10px 14px; font-size: 1rem;
+  border: 1px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--text);
+  margin: 6px 0 4px;
+}
+.dom-lang { margin: 22px 0 10px; font-size: 1.05rem; }
+.dom-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.dom-chip {
+  padding: 6px 12px; border: 1px solid var(--border); border-radius: 999px;
+  font-size: .88rem; text-decoration: none; color: var(--text); background: var(--surface);
+}
+.dom-chip:hover { border-color: var(--accent); text-decoration: none; }

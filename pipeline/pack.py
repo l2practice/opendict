@@ -3,7 +3,7 @@
 
 Input : build/en_entries.jsonl, build/vi_entries.jsonl, build/en_forms.jsonl
 Output: site/data/
-          meta.json, index-en.json, index-vi.json, forms.json
+          meta.json, index-en.json, index-vi.json, forms.json, domains.json
           shards/en/<shard>.json, shards/vi/<shard>.json
 
 Index formats (must match site/js/data.js):
@@ -79,11 +79,17 @@ def main():
         json.dump(vi_index, f, ensure_ascii=False, separators=(",", ":"))
     with open(f"{SITE_DATA}/forms.json", "w", encoding="utf-8") as f:
         json.dump(forms, f, ensure_ascii=False, separators=(",", ":"))
+    # specialist domain browse lists
+    domains = json.load(open("build/domains.json", encoding="utf-8"))
+    with open(f"{SITE_DATA}/domains.json", "w", encoding="utf-8") as f:
+        json.dump(domains, f, ensure_ascii=False, separators=(",", ":"))
     meta = {
-        "version": "1.0.0",
+        "version": "1.1.0",
         "built": date.today().isoformat(),
         "retrieved": "2026-10-06",
         "en": n_en, "vi": n_vi,
+        "domains": {k: {"en": len(v["en"]), "vi": len(v["vi"])}
+                    for k, v in domains.items()},
         "sources": 5,
         "licence_data": "CC BY-SA 4.0 (ECDICT: MIT)",
     }

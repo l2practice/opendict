@@ -142,15 +142,24 @@
     b.title = saved ? t("unsave") : t("save");
   }
 
+  const DOM_SLUGS = { "kinh-te": "kte", "ke-toan": "ktoan" };
+  const DOM_URL = { kte: "#/domain/kinh-te", ktoan: "#/domain/ke-toan" };
+  function domBadges(entry) {
+    return (entry.dom || []).map(d =>
+      `<a class="dom-badge dom-${d}" href="${DOM_URL[d]}">${esc(t(d === "kte" ? "dom_kte" : "dom_ktoan"))}</a>`
+    ).join("");
+  }
+
   function entryHead(lang, entry, redirectedFrom) {
     const fav = `<button id="favBtn" class="icon-btn" aria-label="${esc(t("save"))}">☆</button>`;
     const copy = `<button id="copyBtn" class="icon-btn" title="${esc(t("copy_link"))}">🔗</button>`;
     const cefr = entry.cefr ? `<span class="cefr c-${esc(entry.cefr)}">${esc(entry.cefr)}</span>` : "";
     const freq = entry.freq ? `<span class="freq">#${fmtNum(entry.freq)} ${esc(t("freq_rank"))}</span>` : "";
+    const doms = domBadges(entry);
     const redir = redirectedFrom
       ? `<div class="redirect-note">“${esc(redirectedFrom)}” ${esc(t("redirected"))} → <b>${esc(entry.w)}</b></div>` : "";
     return `<div class="entry-head">
-        <h1 class="entry-word">${esc(entry.w)}</h1>${cefr}${freq}
+        <h1 class="entry-word">${esc(entry.w)}</h1>${cefr}${freq}${doms}
         <div class="entry-actions">${fav}${copy}</div>
       </div>${redir}`;
   }
@@ -266,12 +275,66 @@
         <button class="btn primary" id="randomBtn">${esc(t("random_word"))}</button>
         <a class="btn" href="#/about">${esc(t("browse_about"))}</a>
       </div>
+      <h2 class="dom-home-title">${esc(t("dom_browse"))}</h2>
+      <div class="dom-cards">
+        <a class="dom-card dom-kte-card" href="#/domain/kinh-te">
+          <span class="dom-card-name">${esc(t("dom_kte"))}</span>
+          <span class="dom-card-desc">${esc(t("dom_card_kte_d"))}</span>
+          <span class="dom-card-count"><b>${fmtNum((Data.domains && Data.domains.kte && (Data.domains.kte.en.length + Data.domains.kte.vi.length)) || 0)}</b> ${esc(t("dom_terms"))}</span>
+        </a>
+        <a class="dom-card dom-ktoan-card" href="#/domain/ke-toan">
+          <span class="dom-card-name">${esc(t("dom_ktoan"))}</span>
+          <span class="dom-card-desc">${esc(t("dom_card_ktoan_d"))}</span>
+          <span class="dom-card-count"><b>${fmtNum((Data.domains && Data.domains.ktoan && (Data.domains.ktoan.en.length + Data.domains.ktoan.vi.length)) || 0)}</b> ${esc(t("dom_terms"))}</span>
+        </a>
+      </div>
     </div>`;
     document.getElementById("randomBtn").addEventListener("click", () => {
       const r = Data.randomWord();
       location.hash = `#/${r.lang}/${encodeURIComponent(r.w)}`;
     });
     document.title = "OpenDict — " + t("hero_title_b");
+  }
+
+  /* ---------- specialist domain browse ---------- */
+  function viewDomain(slug) {
+    const code = DOM_SLUGS[slug];
+    const doms = Data.domains;
+    if (!code || !doms || !doms[code]) { viewNotFound(slug); return; }
+    const d = doms[code];
+    const nEn = (d.en || []).length, nVi = (d.vi || []).length;
+    const title = t(code === "kte" ? "dom_title_kte" : "dom_title_ktoan");
+    const sub = t(code === "kte" ? "dom_sub_kte" : "dom_sub_ktoan");
+    const chipList = (words, lang) => words.map(w =>
+      `<a class="dom-chip" data-w="${esc(w.toLowerCase())}" href="#/${lang}/${encodeURIComponent(w)}">${esc(w)}</a>`
+    ).join("");
+    view.innerHTML = `<div class="domain-page">
+      <p><a class="btn" href="#/">${esc(t("back_home"))}</a></p>
+      <h2>${esc(title)}</h2>
+      <p class="dom-sub">${esc(sub)}</p>
+      <p class="dom-count"><b>${fmtNum(nEn + nVi)}</b> ${esc(t("dom_terms"))}
+        <span class="dot">·</span> ${fmtNum(nEn)} ${esc(t("en_entry"))}
+        <span class="dot">·</span> ${fmtNum(nVi)} ${esc(t("vi_entry"))}</p>
+      <input id="domFilter" class="dom-filter" type="search" placeholder="${esc(t("dom_search_ph"))}" aria-label="${esc(t("dom_search_ph"))}">
+      <p class="dom-note">${esc(t("dom_note"))}</p>
+      <h3 class="dom-lang">${esc(t("en_entry"))} (${fmtNum(nEn)})</h3>
+      <div class="dom-grid" id="domGridEn">${chipList(d.en || [], "en")}</div>
+      <h3 class="dom-lang">${esc(t("vi_entry"))} (${fmtNum(nVi)})</h3>
+      <div class="dom-grid" id="domGridVi">${chipList(d.vi || [], "vi")}</div>
+      <p class="empty-note" id="domEmpty" hidden>${esc(t("dom_no_match"))}</p>
+    </div>`;
+    const filt = document.getElementById("domFilter");
+    filt.addEventListener("input", () => {
+      const q = Data.normVi(filt.value.trim());
+      let visible = 0;
+      view.querySelectorAll(".dom-chip").forEach(c => {
+        const show = !q || Data.normVi(c.dataset.w).includes(q);
+        c.style.display = show ? "" : "none";
+        if (show) visible++;
+      });
+      document.getElementById("domEmpty").hidden = visible > 0;
+    });
+    document.title = `${title} — OpenDict`;
   }
 
   function viewList(kind) {
@@ -328,9 +391,15 @@
       </table></div>
       <h2>${esc(t("about_h_licence"))}</h2>
       <p>${esc(t("about_lic_app"))}<br>${esc(t("about_lic_data"))}</p>
+      <h2>${esc(t("dom_about_h"))}</h2>
+      <p>${esc(t("dom_about_p"))}</p>
+      <div class="quick-links" style="margin-bottom:18px">
+        <a class="btn" href="#/domain/kinh-te">${esc(t("dom_kte"))}</a>
+        <a class="btn" href="#/domain/ke-toan">${esc(t("dom_ktoan"))}</a>
+      </div>
       <h2>${esc(t("about_h_rebuild"))}</h2>
       <p>${esc(t("about_rebuild_note"))}</p>
-      <pre>python3 pipeline/extract_en.py   # English entries (needs raw-en.jsonl.gz)\npython3 pipeline/extract_vi.py   # Vietnamese entries\npython3 pipeline/enrich.py       # CEFR levels + frequency ranks\npython3 pipeline/pack.py         # shard + write site/data/</pre>
+      <pre>python3 pipeline/extract_en.py   # English entries (needs raw-en.jsonl.gz)\npython3 pipeline/extract_vi.py   # Vietnamese entries\npython3 pipeline/enrich.py       # CEFR levels + frequency ranks\npython3 pipeline/extract_domains.py  # specialist domain labels (needs kaikki data)\npython3 pipeline/pack.py         # shard + write site/data/</pre>
     </div>`;
     document.title = `${t("about_title")} — OpenDict`;
   }
@@ -356,6 +425,7 @@
       return;
     }
     if (page === "about") { viewAbout(); return; }
+    if (page === "domain") { viewDomain(parts[1] || ""); return; }
     if (page === "favorites" || page === "history") { viewList(page); return; }
     if (page === "notfound") { viewNotFound(decodeURIComponent(parts.slice(1).join("/") || "")); return; }
     viewHome();

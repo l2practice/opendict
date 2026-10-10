@@ -1,5 +1,5 @@
 /* OpenDict service worker — offline-first for dictionary data */
-const CACHE = "opendict-v1";
+const CACHE = "opendict-v2";
 const SHELL = ["./", "./index.html", "./css/style.css", "./js/app.js",
                "./js/data.js", "./js/i18n.js", "./manifest.json", "./favicon.svg"];
 

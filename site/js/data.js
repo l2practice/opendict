@@ -12,7 +12,7 @@ const Data = (() => {
   })();
   const D = (f) => fetch(BASE + "data/" + f).then(r => { if (!r.ok) throw new Error(f); return r.json(); });
 
-  let meta = null, idxEn = null, idxVi = null, forms = null;
+  let meta = null, idxEn = null, idxVi = null, forms = null, domains = null;
   const shardCache = new Map();
   const inflight = new Map();
 
@@ -22,8 +22,9 @@ const Data = (() => {
   function disp(r) { return r[3] || r[0]; }
 
   async function load() {
-    [meta, idxEn, idxVi, forms] = await Promise.all([
-      D("meta.json"), D("index-en.json"), D("index-vi.json"), D("forms.json")
+    [meta, idxEn, idxVi, forms, domains] = await Promise.all([
+      D("meta.json"), D("index-en.json"), D("index-vi.json"), D("forms.json"),
+      D("domains.json").catch(() => null)
     ]);
     return meta;
   }
@@ -131,5 +132,5 @@ const Data = (() => {
   }
 
   return { load, suggest, getEntry, resolveForm, randomWord, normVi,
-           get meta() { return meta; } };
+           get meta() { return meta; }, get domains() { return domains; } };
 })();
