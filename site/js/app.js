@@ -183,46 +183,66 @@
     return words.map(w => `<a class="link-chip" href="#/${lang}/${encodeURIComponent(w)}">${esc(w)}</a>`).join("");
   }
 
-  function viewEntryEn(entry, redirectedFrom) {
-    let h = entryHead("en", entry, redirectedFrom) + ipaRow(entry, "en");
+  function viewEntryEn(entry, redirectedFrom, viEntry) {
+    const allSyn = [...new Set(entry.pos.flatMap(s => s.senses.flatMap(x => x.syn || [])))].slice(0, 16);
+    const allAnt = [...new Set(entry.pos.flatMap(s => s.senses.flatMap(x => x.ant || [])))].slice(0, 16);
+    let h = `<div class="entry-card">${entryHead("en", entry, redirectedFrom)}${ipaRow(entry, "en")}</div>`;
     for (const sec of entry.pos) {
       h += `<section class="pos-block"><h2 class="pos-title">${esc(posLabel(sec.p))}</h2>`;
       sec.senses.forEach((s, i) => {
         h += `<div class="sense"><span class="sense-num">${i + 1}.</span><span class="gloss">${esc(s.g.join(" "))}</span>`;
         if (s.vi && s.vi.length)
-          h += `<div class="vi-meanings"><span class="vi-label">${esc(t("vi_meaning"))}</span>${s.vi.map(v => `<span class="vi-chip">${esc(v)}</span>`).join("")}</div>`;
+          h += `<div class="vi-meanings"><span class="vi-tag">VI</span><span class="vi-text">${s.vi.map(v => esc(v)).join("; ")}</span></div>`;
         for (const x of (s.x || []))
           h += `<div class="example">“${esc(x[0])}”</div>`;
-        if (s.syn && s.syn.length)
-          h += `<div class="syn-row"><span class="lbl">${esc(t("synonyms"))}</span> ${chips(s.syn, "en")}</div>`;
-        if (s.ant && s.ant.length)
-          h += `<div class="syn-row"><span class="lbl">${esc(t("antonyms"))}</span> ${chips(s.ant, "en")}</div>`;
         h += `</div>`;
       });
       h += `</section>`;
     }
     if (entry.vi_other && entry.vi_other.length)
       h += `<section class="pos-block"><h2 class="pos-title">${esc(t("other_vi"))}</h2>
-            <div class="vi-meanings">${entry.vi_other.map(v => `<span class="vi-chip">${esc(v)}</span>`).join("")}</div></section>`;
+            <div class="vi-meanings"><span class="vi-tag">VI</span><span class="vi-text">${entry.vi_other.map(v => esc(v)).join("; ")}</span></div></section>`;
+    if (allSyn.length || allAnt.length) {
+      h += `<details class="collapse"><summary>${esc(t("sec_syn_ant"))}</summary><div class="collapse-body">`;
+      if (allSyn.length)
+        h += `<div class="syn-row"><span class="lbl">${esc(t("synonyms"))}</span> ${chips(allSyn, "en")}</div>`;
+      if (allAnt.length)
+        h += `<div class="syn-row"><span class="lbl">${esc(t("antonyms"))}</span> ${chips(allAnt, "en")}</div>`;
+      h += `</div></details>`;
+    }
+    if (entry.etym)
+      h += `<details class="collapse"><summary>${esc(t("sec_origin"))}</summary><div class="collapse-body etym">${esc(entry.etym)}</div></details>`;
+    if (viEntry)
+      h += `<details class="collapse"><summary>${esc(t("sec_vi_wikt"))}</summary><div class="collapse-body"><a class="btn" href="#/vi/${encodeURIComponent(viEntry.w)}">${esc(t("vi_wikt_link"))} →</a></div></details>`;
+    const nb = Data.neighbors("en", entry.w, 8);
+    if (nb.length)
+      h += `<section class="nearby"><h3>${esc(t("sec_nearby"))}</h3><div class="chip-row">${chips(nb, "en")}</div></section>`;
+    h += `<p class="wikt-link"><a href="https://en.wiktionary.org/wiki/${encodeURIComponent(entry.w.replace(/ /g, "_"))}" target="_blank" rel="noopener">${esc(t("sec_full_wikt"))} ↗</a></p>`;
     view.innerHTML = h;
     wireEntry("en", entry);
   }
 
   function viewEntryVi(entry) {
-    let h = entryHead("vi", entry, null) + ipaRow(entry, "vi");
+    const allSyn = [...new Set(entry.pos.flatMap(s => s.senses.flatMap(x => x.syn || [])))].slice(0, 16);
+    const allAnt = [...new Set(entry.pos.flatMap(s => s.senses.flatMap(x => x.ant || [])))].slice(0, 16);
+    let h = `<div class="entry-card">${entryHead("vi", entry, null)}${ipaRow(entry, "vi")}</div>`;
     for (const sec of entry.pos) {
       h += `<section class="pos-block"><h2 class="pos-title">${esc(posLabel(sec.p))}</h2>`;
       sec.senses.forEach((s, i) => {
         h += `<div class="sense"><span class="sense-num">${i + 1}.</span><span class="gloss">${esc(s.g.join("; "))}</span>`;
         for (const x of (s.x || []))
           h += `<div class="example">“${esc(x[0])}”${x[1] ? `<span class="ex-vi">${esc(x[1])}</span>` : ""}</div>`;
-        if (s.syn && s.syn.length)
-          h += `<div class="syn-row"><span class="lbl">${esc(t("synonyms"))}</span> ${chips(s.syn, "vi")}</div>`;
-        if (s.ant && s.ant.length)
-          h += `<div class="syn-row"><span class="lbl">${esc(t("antonyms"))}</span> ${chips(s.ant, "vi")}</div>`;
         h += `</div>`;
       });
       h += `</section>`;
+    }
+    if (allSyn.length || allAnt.length) {
+      h += `<details class="collapse"><summary>${esc(t("sec_syn_ant"))}</summary><div class="collapse-body">`;
+      if (allSyn.length)
+        h += `<div class="syn-row"><span class="lbl">${esc(t("synonyms"))}</span> ${chips(allSyn, "vi")}</div>`;
+      if (allAnt.length)
+        h += `<div class="syn-row"><span class="lbl">${esc(t("antonyms"))}</span> ${chips(allAnt, "vi")}</div>`;
+      h += `</div></details>`;
     }
     const rel = (entry.rel || []).filter(w => w !== entry.w);
     const der = (entry.der || []).filter(w => w !== entry.w);
@@ -232,6 +252,10 @@
       if (der.length) h += `<div class="syn-row"><span class="lbl">${esc(t("derived"))}</span> ${chips(der.slice(0, 14), "vi")}</div>`;
       h += `</section>`;
     }
+    const nb = Data.neighbors("vi", entry.w, 8);
+    if (nb.length)
+      h += `<section class="nearby"><h3>${esc(t("sec_nearby"))}</h3><div class="chip-row">${chips(nb, "vi")}</div></section>`;
+    h += `<p class="wikt-link"><a href="https://vi.wiktionary.org/wiki/${encodeURIComponent(entry.w.replace(/ /g, "_"))}" target="_blank" rel="noopener">${esc(t("sec_full_wikt"))} ↗</a></p>`;
     view.innerHTML = h;
     wireEntry("vi", entry);
   }
@@ -420,7 +444,14 @@
         const base = Data.resolveForm(q);
         if (base) { entry = await Data.getEntry("en", base); redirectedFrom = q; }
       }
-      if (entry) (page === "en" ? viewEntryEn : viewEntryVi)(entry, redirectedFrom);
+      if (entry) {
+        // cross-link: does this English word also exist in Vietnamese Wiktionary?
+        let viEntry = null;
+        if (page === "en") {
+          try { viEntry = await Data.getEntry("vi", entry.w); } catch { /* ignore */ }
+        }
+        (page === "en" ? viewEntryEn : viewEntryVi)(entry, redirectedFrom, viEntry);
+      }
       else viewNotFound(q);
       return;
     }

@@ -113,13 +113,18 @@ const Data = (() => {
     if (lang === "en") {
       const i = lowerBound(idxEn, key, r => r[0]);
       if (!idxEn[i] || idxEn[i][0] !== key) return null;
-      const data = await getShard("en", idxEn[i][1]);
-      return data[key] || null;
+      // among duplicate keys (e.g. "Android" vs "android"), prefer exact display match
+      let row = idxEn[i];
+      for (let j = i; j < idxEn.length && idxEn[j][0] === key; j++) {
+        if (idxEn[j][3] === word) { row = idxEn[j]; break; }
+      }
+      const data = await getShard("en", row[1]);
+      return data[row[3]] || data[key] || null;
     }
     const r = viExact(key);
     if (!r) return null;
     const data = await getShard("vi", r[2]);
-    return data[r[0]] || null;
+    return data[r[3]] || data[r[0]] || null;
   }
 
   function randomWord() {
@@ -131,6 +136,33 @@ const Data = (() => {
     return { w: disp(r), lang: "vi" };
   }
 
-  return { load, suggest, getEntry, resolveForm, randomWord, normVi,
+  // alphabetical neighbors of a word (for "nearby words"); excludes the word itself
+  function neighbors(lang, word, n = 8) {
+    const idx = lang === "en" ? idxEn : idxVi;
+    if (!idx || !idx.length) return [];
+    const key = word.toLowerCase();
+    const kf = lang === "en" ? (r => r[0]) : (r => r[1]);
+    const target = lang === "en" ? key : normVi(key);
+    let i = lowerBound(idx, target, kf);
+    // if exact match, i points at it; collect around it
+    const out = [];
+    const seen = new Set([key]);
+    let a = i - 1, b = (idx[i] && kf(idx[i]) === target) ? i + 1 : i;
+    while (out.length < n && (a >= 0 || b < idx.length)) {
+      if (a >= 0) {
+        const w = disp(idx[a]).toLowerCase();
+        if (!seen.has(w)) { seen.add(w); out.push(disp(idx[a])); }
+        a--;
+      }
+      if (out.length < n && b < idx.length) {
+        const w = disp(idx[b]).toLowerCase();
+        if (!seen.has(w)) { seen.add(w); out.push(disp(idx[b])); }
+        b++;
+      }
+    }
+    return out.sort((x, y) => x.toLowerCase() < y.toLowerCase() ? -1 : 1);
+  }
+
+  return { load, suggest, getEntry, resolveForm, randomWord, normVi, neighbors,
            get meta() { return meta; }, get domains() { return domains; } };
 })();

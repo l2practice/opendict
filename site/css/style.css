@@ -236,3 +236,50 @@ a:hover { text-decoration: underline; }
   font-size: .88rem; text-decoration: none; color: var(--text); background: var(--surface);
 }
 .dom-chip:hover { border-color: var(--accent); text-decoration: none; }
+
+/* ---------- entry page v2 ---------- */
+.entry-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 24px 28px; margin-bottom: 18px;
+  box-shadow: var(--shadow);
+}
+.entry-word {
+  font-family: Georgia, "Times New Roman", "Noto Serif", serif;
+  letter-spacing: .01em;
+}
+.vi-tag {
+  background: #16a34a; color: #fff; font-size: .72rem; font-weight: 800;
+  padding: 2px 9px; border-radius: 6px; margin-right: 10px; vertical-align: 2px;
+  white-space: nowrap;
+}
+.vi-text { color: #15803d; font-weight: 700; font-size: 1.1rem; line-height: 1.6; }
+[data-theme="dark"] .vi-text { color: #4ade80; }
+details.collapse {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); margin: 14px 0; box-shadow: var(--shadow);
+}
+details.collapse summary {
+  cursor: pointer; padding: 15px 22px; font-weight: 700; font-size: 1.03rem;
+  list-style: none; display: flex; align-items: center; gap: 10px; user-select: none;
+}
+details.collapse summary::-webkit-details-marker { display: none; }
+details.collapse summary::before {
+  content: "▸"; color: var(--accent); font-size: 1.1rem; transition: transform .15s;
+}
+details.collapse[open] summary::before { content: "▾"; }
+details.collapse summary:hover { color: var(--accent); }
+.collapse-body { padding: 2px 22px 18px; }
+.collapse-body .syn-row { margin-top: 10px; }
+.collapse-body .syn-row:first-child { margin-top: 2px; }
+.etym { line-height: 1.7; font-size: 1rem; }
+.nearby { margin: 20px 0 6px; }
+.nearby h3 { font-size: .95rem; color: var(--muted); margin: 0 0 10px; font-weight: 700; }
+.chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.wikt-link { margin: 20px 0 8px; font-size: .95rem; }
+.wikt-link a { color: var(--accent); font-weight: 600; text-decoration: none; }
+.wikt-link a:hover { text-decoration: underline; }
+.gloss { font-size: 1.06rem; line-height: 1.55; }
+@media (max-width: 640px) {
+  .entry-card { padding: 18px; }
+  .vi-text { font-size: 1.02rem; }
+}

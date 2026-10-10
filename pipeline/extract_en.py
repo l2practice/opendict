@@ -12,12 +12,43 @@ sense whose gloss best matches that label, otherwise to entry-level vi_other.
 Compact entry schema:
 {"w": headword, "cefr": "B1", "freq": 1234,
  "uk": "/ipa/", "us": "/ipa/",
+ "etym": "From Middle English, ...",   (word origin, cleaned prose)
  "pos": [{"p": "verb", "senses": [
     {"g": ["english gloss"], "vi": ["đi"], "x": [["en example"]],
      "syn": [...], "ant": [...] }]}],
  "vi_other": [...]}
 """
 import gzip, json, sys, re, unicodedata
+
+ETY_STARTERS = ("From ", "Borrowed ", "Derived ", "Unknown ", "Perhaps ", "Probably ",
+    "Compare ", "Ultimately ", "Cognate ", "Alteration ", "Blend ", "Blending ",
+    "Clipping ", "Shortening ", "Back-formation ", "Back formation ", "Variant ",
+    "Doublet ", "See ", "Shortened ", "Imitative ", "Onomatopoeic ",
+    "Etymology uncertain")
+
+def clean_etymology(t):
+    """Extract readable prose from wiktextract etymology_text (CC BY-SA 4.0)."""
+    if not t:
+        return None
+    lines = [l.strip() for l in t.split("\n") if l.strip()]
+    start = None
+    for i, l in enumerate(lines):
+        if l == "Etymology tree":
+            continue
+        if l.startswith(ETY_STARTERS):
+            start = i
+            break
+    if start is None:
+        return None
+    text = " ".join(lines[start:])
+    text = re.sub(r"\{\{[^{}]*\}\}", lambda m: m.group(0).split("|")[-1].rstrip("}"), text)
+    text = re.sub(r"\{\{|\}\}", "", text)
+    text = re.sub(r"\[\[([^|\]]*\|)?([^\]]+)\]\]", r"\2", text)
+    text = re.sub(r"<[^>]+>", "", text)
+    text = re.sub(r"\s+", " ", text).strip()
+    if len(text) < 8:
+        return None
+    return text[:600]
 
 RAW = "raw/raw-en.jsonl.gz"
 OUT = "build/en_entries.jsonl"
@@ -89,6 +120,10 @@ def main():
                     if fv not in forms:
                         forms[fv] = w
             e = entries.setdefault(w, {"w": w, "pos": [], "_p": {}})
+            if "_etym" not in e:
+                et = clean_etymology(r.get("etymology_text"))
+                if et:
+                    e["_etym"] = et
             if pos not in e["_p"]:
                 e["_p"][pos] = len(e["pos"])
                 e["pos"].append({"p": pos, "senses": []})
@@ -167,6 +202,8 @@ def main():
                 rec["uk"] = e["_uk"]
             if e.get("_us"):
                 rec["us"] = e["_us"]
+            if e.get("_etym"):
+                rec["etym"] = e["_etym"]
             rec["pos"] = e["pos"]
             if e.get("_vo"):
                 rec["vi_other"] = e["_vo"][:12]

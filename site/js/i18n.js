@@ -76,6 +76,12 @@ const I18N = {
     dom_no_match: "Không có thuật ngữ nào khớp.",
     dom_card_kte_d: "Thuật ngữ kinh tế – tài chính",
     dom_card_ktoan_d: "Thuật ngữ kế toán – kiểm toán",
+    sec_syn_ant: "Đồng nghĩa và trái nghĩa",
+    sec_origin: "Nguồn gốc từ",
+    sec_nearby: "Từ gần kề",
+    sec_vi_wikt: "Nghĩa từ Wiktionary tiếng Việt",
+    sec_full_wikt: "Mục từ Wiktionary đầy đủ",
+    vi_wikt_link: "Xem nghĩa trong từ điển Việt–Anh",
   },
   en: {
     search_ph: "Look up an English or Vietnamese word…",
@@ -153,6 +159,12 @@ const I18N = {
     dom_no_match: "No matching terms.",
     dom_card_kte_d: "Economics & finance terms",
     dom_card_ktoan_d: "Accounting & auditing terms",
+    sec_syn_ant: "Synonyms and opposites",
+    sec_origin: "Word origin",
+    sec_nearby: "Nearby words",
+    sec_vi_wikt: "Meanings from Vietnamese Wiktionary",
+    sec_full_wikt: "Full Wiktionary entry",
+    vi_wikt_link: "See Vietnamese–English entry",
   }
 };
 let UI_LANG = localStorage.getItem("od_lang") || "vi";

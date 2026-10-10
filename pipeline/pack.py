@@ -9,7 +9,7 @@ Output: site/data/
 Index formats (must match site/js/data.js):
   index-en.json: [[key, shard, freq, display], ...] sorted by key   (key = lower)
   index-vi.json: [[key, norm, shard, display], ...] sorted by key   (key = lower)
-  shards: {key: entry}
+  shards: {display: entry}   (display = original headword; keeps "Android" vs "android" distinct)
 """
 import json, os, re, sys, unicodedata, shutil
 from datetime import date
@@ -42,8 +42,9 @@ def main():
         for line in f:
             e = json.loads(line)
             key = e["w"].lower()
+            skey = e["w"]  # case-sensitive shard key: "Android" vs "android" stay distinct
             sh = shard_en(key)
-            en_shards.setdefault(sh, {})[key] = e
+            en_shards.setdefault(sh, {})[skey] = e
             en_index.append([key, sh, e.get("freq") or 10**9, e["w"]])
             n_en += 1
     en_index.sort(key=lambda r: r[0])
@@ -54,9 +55,10 @@ def main():
         for line in f:
             e = json.loads(line)
             key = e["w"].lower()
+            skey = e["w"]
             nv = e.get("n") or norm_vi(key)
             sh = shard_vi(nv)
-            vi_shards.setdefault(sh, {})[key] = e
+            vi_shards.setdefault(sh, {})[skey] = e
             vi_index.append([key, nv, sh, e["w"]])
             n_vi += 1
     vi_index.sort(key=lambda r: (r[1], r[0]))  # sorted by norm for diacritic-insensitive search
